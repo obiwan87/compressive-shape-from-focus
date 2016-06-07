@@ -116,7 +116,7 @@ input_data.StructExpand = false;
 input_data.addOptional('display', false, @(x) islogical(x));
 
 input_data.addOptional('shape', 'cone',...
-    @(x) any(strcmp(x, {'plane','sphere','cone','cos'})));
+    @(x) any(strcmp(x, {'plane','sphere','cone','cos','plane_squared'})));
 
 input_data.addOptional('zlimits', [0.05 0.5], ...
     @(x) isnumeric(x) && (numel(x)==2));
@@ -137,8 +137,8 @@ z1 = input_data.Results.zlimits(2);
 
 switch input_data.Results.shape
     case 'plane'
-        x = linspace(0, 1, im_size(2));
-        y = linspace(0, 1, im_size(1))';
+        x = linspace(0, 0.5, im_size(2));
+        y = linspace(0, 0.5, im_size(1))';
         z = meshgrid(x,y);
     case 'plane_squared'
         x = linspace(0, 1, im_size(2));

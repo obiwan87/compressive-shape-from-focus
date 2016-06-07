@@ -1,6 +1,5 @@
 %% Load image data
 rng(0)
-load imdata.mat
 
 %% Non-Linear axial shift
 % |focus| was set to be quadratic interpolation between |0.05 m| and |0.5 m|.
@@ -74,4 +73,4 @@ cz = imfilter(cz, MEANF', 'replicate');
 z = imfilter(z, MEANF', 'replicate');
 
 %% Display Results
-showresult(z,cz,imdata.z);
+showresult(imcrop(z,imdata.ROI),imcrop(cz, imdata.ROI),imcrop(imdata.z, imdata.ROI));

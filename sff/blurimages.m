@@ -1,16 +1,27 @@
-texmap = imread('C:\Users\thesp\home\uni\bildauswertung und -fusion\matlab\defocus\texture1.tif');
+texmap = imread('C:/Users/thesp/home/uni/bildauswertung und -fusion/matlab/defocus/texture1.tif');
 
-focus = linspace(sqrt(0.02), 1.00, 100);
+root_dir = '../data/img/';
+t = dir(root_dir);
+matches = regexp({t(logical([t.isdir])).name}, '[0-9]+', 'match');
+folder = max(str2double(func.foldl(matches, {}, @(x,y) {x{:} y{:}})))+1;
+
+focus = linspace(sqrt(0.05), sqrt(1.5), 100);
 focus = focus .* focus;
+path = '../data/img/%d';
+shapes = {'cone', 'cos', 'plane_squared'};
+first = folder;
+paths = first:(first + numel(shapes) - 1);
 
-path = 'C:\Users\thesp\home\uni\bildauswertung und -fusion\data\img\12';
-mkdir(path);
-imdata = simblur(texmap, focus, path, 'shape', 'plane');
+d = pwd;
 
-save(fullfile(path, 'imdata.mat'), 'imdata');
- 
-path = 'C:\Users\thesp\home\uni\bildauswertung und -fusion\data\img\13';
-mkdir(path);
-imdata = simblur(texmap, focus, path, 'shape', 'sphere');
- 
-save(fullfile(path, 'imdata.mat'), 'imdata');
+for i=1:numel(paths)
+    p = sprintf(path, paths(i)); 
+    mkdir(p);
+    imdata = simblur(texmap, focus, p, 'shape', shapes{i}, 'zlimits', [0.05 0.20]);
+    reconstruct
+    save(fullfile(p, 'imdata.mat'), 'imdata', 'z', 'cz');
+    fprintf('(%d) MSE: %2.3f\n', paths(i), immse(imdata.z, cz));
+    cd(root_dir);
+    zip(sprintf('%d.zip', paths(i)), sprintf('%d', paths(i)));
+    cd(d);
+end
