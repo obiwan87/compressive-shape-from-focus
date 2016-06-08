@@ -19,7 +19,7 @@ subimage(imread(imdata.images{1}));
 % 2D-representation of |stack|. In this case, I was using a stack of 61
 % images and a linear focus shift of 5 - 50 cm
 
-cstacksize = 12; 
+cstacksize = 6; 
 stack = imreadlist(imdata.images, @(x) x);
 lstack = reshape(stack, size(stack,1) * size(stack,2), size(stack,3));
 

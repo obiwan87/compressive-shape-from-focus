@@ -1,5 +1,6 @@
-function [fmx, fmy, fm] = fmeasurecube(imlist, WSize)      
+function [fmx, fmy, fm] = fmeasurecube(imlist, WSize, varargin)      
     MEANF = fspecial('average',[WSize WSize]);
+    
     if iscell(imlist)
         image = imread(imlist{1});
         P = numel(imlist);
@@ -29,5 +30,3 @@ function [fmx, fmy, fm] = fmeasurecube(imlist, WSize)
         fm(:,:,i) = imfilter(abs(Lx) + abs(Ly), MEANF, 'replicate');
     end
 end
-
-    
