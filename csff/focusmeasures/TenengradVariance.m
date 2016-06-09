@@ -21,10 +21,13 @@ classdef TenengradVariance < FocusMeasure
             end
         end
         
-        function [fm, fmlin] = Calculate(obj,images, wsize)                
+        function [fmlin, fm] = Calculate(obj,images, wsize)                
             images = obj.readImages(images);          
             
-            fm = zeros(size(images,1), size(images,2), size(images,3));
+            if nargout > 1
+                fm = zeros(size(images,1), size(images,2), size(images,3));
+            end
+            
             fmlin = zeros(size(images,3), size(images,1)*size(images,2),...
                 obj.LinearPartsCount);
             sx = fspecial('sobel');
@@ -36,8 +39,11 @@ classdef TenengradVariance < FocusMeasure
                 Gy = imfilter(image, sx', 'replicate', 'conv');
                 
                 fmlin(i,:,1) = Gx(:);
-                fmlin(i,:,2) = Gy(:);        
-                fm(:,:,i) = stdfilt(Gx.^2 + Gy.^2, ones(wsize,wsize)).^2;
+                fmlin(i,:,2) = Gy(:);       
+                
+                if nargout > 1
+                    fm(:,:,i) = stdfilt(Gx.^2 + Gy.^2, ones(wsize,wsize)).^2;
+                end
             end
         end
     end

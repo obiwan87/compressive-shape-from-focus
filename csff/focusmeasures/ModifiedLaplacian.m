@@ -3,20 +3,20 @@ classdef ModifiedLaplacian < FocusMeasure
     %   Focus measure: Modified Laplacian
     
     properties
-       LinearPartsCount = 2
+        LinearPartsCount = 2
     end
     
-    methods        
+    methods
         function fm = FromLinear(~, fmcubelin, imgsize, wsize)
             meanf = fspecial('average',[wsize wsize]);
-
+            
             width = imgsize(1);
             height = imgsize(2);
-
+            
             fm = zeros(width, height, size(fmcubelin,1));
-
+            
             for i=1:size(fm, 3)
-                fmx = reshape(fmcubelin(i,:,1), width, height);                
+                fmx = reshape(fmcubelin(i,:,1), width, height);
                 fmy = reshape(fmcubelin(i,:,2), width, height);
                 
                 fm(:,:,i) = abs(fmx) + abs(fmy);
@@ -24,10 +24,13 @@ classdef ModifiedLaplacian < FocusMeasure
             end
         end
         
-        function [fm, fmlin] = Calculate(obj,images, wsize)                
-            images = obj.readImages(images);          
+        function [fmlin, fm] = Calculate(obj,images, wsize)
+            images = obj.readImages(images);
             
-            fm = zeros(size(images,1), size(images,2), size(images,3));
+            if nargout > 1
+                fm = zeros(size(images,1), size(images,2), size(images,3));
+            end
+            
             fmlin = zeros(size(images,3), size(images,1)*size(images,2),...
                 obj.LinearPartsCount);
             
@@ -40,8 +43,11 @@ classdef ModifiedLaplacian < FocusMeasure
                 Ly = imfilter(image, M', 'replicate', 'conv');
                 
                 fmlin(i,:,1) = Lx(:);
-                fmlin(i,:,2) = Ly(:);        
-                fm(:,:,i) = imfilter(abs(Lx) + abs(Ly), meanf, 'replicate');
+                fmlin(i,:,2) = Ly(:);
+                
+                if nargout > 1
+                    fm(:,:,i) = imfilter(abs(Lx) + abs(Ly), meanf, 'replicate');
+                end
             end
         end
     end

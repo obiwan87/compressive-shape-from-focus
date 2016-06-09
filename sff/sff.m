@@ -99,7 +99,7 @@ fprintf('[100%%]\n' )
 % Median filter:
 if opts.filter~=0
     fprintf('Smoothing ')
-    z = medfilt2(z, [opts.filter opts.Filter]);
+    z = medfilt2(z, [opts.filter opts.filter]);
     fprintf('[100%%]\n')
 end
 

@@ -22,14 +22,16 @@ classdef ImageCurvature < FocusMeasure
             end
         end
         
-        function [fm, fmlin] = Calculate(obj,images, wsize)    
+        function [fmlin, fm] = Calculate(obj,images, wsize)    
             meanf = fspecial('average',[wsize wsize]);
             images = obj.readImages(images); 
             
             M1 = [-1 0 1;-1 0 1;-1 0 1];
             M2 = [1 0 1;1 0 1;1 0 1];
             
-            fm = zeros(size(images,1), size(images,2), size(images,3));
+            if nargout > 1
+                fm = zeros(size(images,1), size(images,2), size(images,3));
+            end
             fmlin = zeros(size(images,3), size(images,1)*size(images,2),...
                 obj.LinearPartsCount);            
             
@@ -49,10 +51,12 @@ classdef ImageCurvature < FocusMeasure
                 fmlin(i,:,3) = P2(:);
                 fmlin(i,:,4) = P3(:);                
                 
-                FM = abs(P0) + abs(P1) + abs(P2) + abs(P3);
-                FM = imfilter(FM, meanf, 'replicate');          
-                
-                fm(:,:,i) = FM;
+                if nargout > 1
+                    FM = abs(P0) + abs(P1) + abs(P2) + abs(P3);
+                    FM = imfilter(FM, meanf, 'replicate');          
+
+                    fm(:,:,i) = FM;
+                end
             end           
         end
     end

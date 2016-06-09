@@ -23,10 +23,12 @@ classdef Tenengrad < FocusMeasure
             end
         end
         
-        function [fm, fmlin] = Calculate(obj,images, wsize)                
+        function [fmlin, fm] = Calculate(obj,images, wsize)                
             images = obj.readImages(images);          
+            if nargout > 1
+                fm = zeros(size(images,1), size(images,2), size(images,3));
+            end
             
-            fm = zeros(size(images,1), size(images,2), size(images,3));
             fmlin = zeros(size(images,3), size(images,1)*size(images,2),...
                 obj.LinearPartsCount);
             
@@ -41,7 +43,10 @@ classdef Tenengrad < FocusMeasure
                 
                 fmlin(i,:,1) = Gx(:);
                 fmlin(i,:,2) = Gy(:);        
-                fm(:,:,i) = imfilter(Gx.^2 + Gy.^2, meanf, 'replicate');
+                
+                if nargout > 1
+                    fm(:,:,i) = imfilter(Gx.^2 + Gy.^2, meanf, 'replicate');
+                end
             end
         end
     end

@@ -8,7 +8,7 @@ classdef (Abstract) FocusMeasure < handle
     
     methods (Abstract, Access=public)
         fm = FromLinear(fmcubelin, imgsize, wsize)
-        [fm, fmlin] = Calculate(images, wsize)        
+        [fmlin, fm] = Calculate(images, wsize)        
     end
     
     methods (Access=protected) 
@@ -21,7 +21,7 @@ classdef (Abstract) FocusMeasure < handle
                 images(:,:,1) = image;
                 
                 for i=2:P
-                    images(:,:,i) = imread(imlist{2});
+                    images(:,:,i) = mat2gray(imread(imlist{2}));
                 end            
             else 
                 images = imlist;
