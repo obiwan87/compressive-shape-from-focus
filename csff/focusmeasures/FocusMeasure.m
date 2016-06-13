@@ -21,7 +21,7 @@ classdef (Abstract) FocusMeasure < handle
                 images(:,:,1) = image;
                 
                 for i=2:P
-                    images(:,:,i) = mat2gray(imread(imlist{2}));
+                    images(:,:,i) = mat2gray(imread(imlist{i}));
                 end            
             else 
                 images = imlist;
