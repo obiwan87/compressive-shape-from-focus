@@ -422,6 +422,12 @@ switch upper(Measure)
         if AF, FM = sum(C2(:)./C1(:));
         else FM = imfilter(C2./C1,MEANF,'replicate');
         end
+    case 'S3'
+        [~,~,FM] = s3_map(Image*255, false);
+        if AF, FM = mean2(FM);
+        else FM = imfilter(FM,MEANF,'replicate');
+        end
+            
     otherwise
         error('Unknown measure %s',upper(Measure))
 end

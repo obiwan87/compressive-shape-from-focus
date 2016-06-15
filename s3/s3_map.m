@@ -1,4 +1,4 @@
-function [s_map1 s_map2 s3] = s3_map(img, show_res)
+function [s_map1, s_map2, s3] = s3_map(img, show_res)
 % Input: img is a gray scale image, in double type, range from 0 - 255. 
 % You have to convert to gray scale if your image
 % is color. You also have to cast img to double in order to run this code

@@ -1,4 +1,4 @@
-function [ z, cz ] = csffrec( imdata, measurement, cstacksize, focusmeasure, wsize )
+function [cz, z] = csffrec( imdata, measurement, cstacksize, focusmeasure, wsize )
 %CSFFREC Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -23,16 +23,22 @@ for i=1:size(cfmlin,3)
 end
 
 rfm = focusmeasure.FromLinear(rfmlin, imgsize, wsize);
-[~, ofm] = focusmeasure.Calculate(stack, wsize);
+
 %% Depthmap
 [cz, ~] = sff2(rfm, 'focus', imdata.focus, 'filter', 5);
-[z,  ~] = sff2(ofm, 'focus', imdata.focus, 'filter', 5);
+
+if nargout > 1
+    [~, ofm] = focusmeasure.Calculate(stack, wsize);
+    [z,  ~] = sff2(ofm, 'focus', imdata.focus, 'filter', 5);
+end
 
 %% Smoothing
 WSize = 5;
 MEANF = fspecial('average',[WSize WSize]);
 cz = imfilter(cz, MEANF', 'replicate');
-z = imfilter(z, MEANF', 'replicate');
+if nargout > 1
+    z = imfilter(z, MEANF', 'replicate');
+end
 
 end
 

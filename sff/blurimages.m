@@ -1,5 +1,5 @@
 root_dir = '../data/img/';
-path = '../data/img/%d';
+path = [root_dir '%d'];
 
 focus = linspace(sqrt(0.03), sqrt(0.25), 100);
 focus = focus .* focus;
@@ -10,9 +10,9 @@ imds = imageDatastore('../data/textures/');
 imds.ReadFcn = @(x) im2double(imresize(imread(x), [360 360]));
 textures = imds.readall;
 
-shapes = {'sphere', 'plane'};
+shapes = {'plane', 'sphere'};
 
-for j=2:numel(textures)
+for j=1:numel(textures)
     texmap = textures{j}; 
     fprintf('Blurring Texture %d \n', j);
     for i=1:numel(shapes)    
