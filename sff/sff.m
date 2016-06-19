@@ -46,21 +46,26 @@ M = opts.size(1);
 N = opts.size(2);
 P = opts.size(3);
 
+
 % Read images:
 tic
 fprintf('Reading      ')
-images = zeros(M, N, P,'uint8');
-for p = 1:P
-    im = imread(imlist{p});
-    
-    if ~isempty(opts.ROI), im = imcrop(im, opts.ROI);
-    end
-    if opts.RGB, im = rgb2gray(im);
-    end    
-    images(:,:,p) = im;
-    fprintf('\b\b\b\b\b[%2.2i%%]',round(100*p/P))
+if iscell(imlist)	
+	images = zeros(M, N, P,'uint8');
+	for p = 1:P
+	    im = imread(imlist{p});
+	    
+	    if ~isempty(opts.ROI), im = imcrop(im, opts.ROI);
+	    end
+	    if opts.RGB, im = rgb2gray(im);
+	    end    
+	    images(:,:,p) = im;
+	    fprintf('\b\b\b\b\b[%2.2i%%]',round(100*p/P))
+	end
+	clear imdata
+else
+	images = imlist;
 end
-clear imdata
 t1 = toc;
 
 %Compute focus measure volume:
@@ -195,7 +200,14 @@ input_data.addOptional('ROI', [], @(x) isnumeric(x) && numel(x)==4);
 
 parse(input_data, varargin{:});
 
-im = imread(imlist{1});
+if iscell(imlist)
+    im = imread(imlist{1});
+    l = length(imlist);
+else
+    im = imlist(:,:,1);
+    l = size(imlist,3);
+end
+
 Opts.RGB = (numel(size(im))==3);
 Opts.INTERP = input_data.Results.interp;
 Opts.fmeasure = input_data.Results.fmeasure;
@@ -203,7 +215,7 @@ Opts.filter = round(input_data.Results.filter);
 Opts.nhsize = round(input_data.Results.nhsize);
 Opts.focus = input_data.Results.focus;
 Opts.ROI = input_data.Results.ROI;
-Opts.size = [size(im), length(imlist)];
+Opts.size = [size(im), l];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     

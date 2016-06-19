@@ -1,3 +1,4 @@
+timestamp = datetime('now', 'Format', 'yMMd-HHmmss');
 root_dir = '../data/img/';
 results_dir = '../data/results';
 
@@ -9,21 +10,22 @@ results2 = {};
 wsize = 9;
 for i=1:numel(datasets)
     imdata = datasets{i};
+    images = imreadlist(imdata.images);
     
     err = zeros(numel(stacksizes), 1);
-    for j=1:numel(stacksizes)
+    parfor j=1:numel(stacksizes)
         subset = unique(round(1:(100/stacksizes(j)):100));
-        z = sff(imdata.images(subset), 'focus', imdata.focus(subset), 'fmeasure', 'LAPM', 'nhsize', wsize);
-        err(j) = immse(z, imdata.z);
+        z = sff(images(:,:,subset), 'focus', imdata.focus(subset), 'fmeasure', 'LAPM', 'nhsize', wsize);
+        err(j) = immse(imcrop(z, imdata.ROI), imcrop(imdata.z, imdata.ROI));
     end
     
     results2{end+1,1} = err;
     
     err = zeros(numel(cstacksizes), 1);
     m = csfftrain(imdata, ModifiedLaplacian(), 9);
-    for j=1:numel(cstacksizes)
+    parfor j=1:numel(cstacksizes)
         cz = csffrec(imdata,m,cstacksizes(j),ModifiedLaplacian(),9);
-        err(j) = immse(cz, imdata.z);        
+        err(j) = immse(imcrop(cz, imdata.ROI), imcrop(imdata.z, imdata.ROI));        
     end
     results2{end,2} = err;
 end
